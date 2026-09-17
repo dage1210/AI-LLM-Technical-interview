@@ -552,7 +552,9 @@ $P_{ij} = \frac{e^{S_{ij} - m}}{\sum_{k=1}^N e^{S_{ik} - m}} \quad (\text{其中
 
 Online Softmax（在线 Softmax）允许我们在**遍历序列的过程中，流式（Stream）地动态更新 Softmax 的局部分子和分母**，从而实现分块增量计算。
 
-为了直观理解，假设一个行向量 $S$ 被切分为两块：$S = [S^{(1)}, S^{(2)}]$。
+为了直观理解，假设一个行向量 $S$ 被切分为两块：
+$S = [S^{(1)}, S^{(2)}]$  
+。
 
 #### 1. 块 1 的局部计算（Block 1）
 
@@ -560,7 +562,8 @@ Online Softmax（在线 Softmax）允许我们在**遍历序列的过程中，�
 
 * $m^{(1)} = \max(S^{(1)})$
 * $l^{(1)} = \sum e^{S^{(1)} - m^{(1)}}$
-* 局部输出乘积：$O^{(1)} = e^{S^{(1)} - m^{(1)}} V^{(1)}$
+* 局部输出乘积：
+* $O^{(1)} = e^{S^{(1)} - m^{(1)}} V^{(1)}$
 
 #### 2. 结合块 2 进行增量更新（Block 2）
 
@@ -643,8 +646,7 @@ PagedAttention 的核心思想是：**打破 KV Cache 在物理显存中必须�
 
 在计算 Attention 时，GPU Kernel 不再从连续地址读取 $K, V$，而是依据 Block Table 的指引：
 
-
-$$\text{Attention 得分 } S_i = Q_i \cdot K_{\text{Block\_Table}[j]}^T$$
+<img width="359" height="55" alt="image" src="https://github.com/user-attachments/assets/b062fb41-c37f-4006-9a2f-81216617d531" />
 
 
 通过自定义的 CUDA Kernel，在离散的物理块之间高效地执行 Gather（收集）与 Scatter（分散）计算，实现与连续内存完全一致的数学结果。
